@@ -4,6 +4,9 @@ Private payroll and treasury disbursements with public aggregate accountability 
 
 ShadowLedger is an entry for the STRK20 Private Sprint 2026, in the **Payments** category and inspired by **RFP-11**. The MVP will let an organization commit to an aggregate payroll run, distribute individual allocations as private STRK20 notes, and give recipients and auditors selective verification artifacts.
 
+- Live app: <https://shadowledger-six.vercel.app>
+- Official registration: <https://github.com/starkience/strk20-hackathon/pull/49>
+
 ## Current milestone — wallet foundation
 
 The web app currently provides:
