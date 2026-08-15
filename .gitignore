@@ -5,6 +5,7 @@ node_modules/
 # Next.js
 .next/
 out/
+.vercel/
 
 # local environment (the example remains committed)
 .env
