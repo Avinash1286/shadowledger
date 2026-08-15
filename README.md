@@ -39,6 +39,8 @@ pnpm check
 
 This runs ESLint, strict TypeScript, unit tests, and the production build. Pure helpers for chain parsing, amount parsing, Wallet API capability checks, and error redaction have unit coverage.
 
+Vercel runs the same lint, typecheck, test, and production-build gate for every deployment through `apps/web/vercel.json`. The Vercel project root must be set to `apps/web` when importing this monorepo.
+
 ## Configuration
 
 Copy the root `.env.example` into `apps/web/.env.local`. Public pool and token addresses remain environment-driven. Never add wallet keys or viewing keys to any environment file.
