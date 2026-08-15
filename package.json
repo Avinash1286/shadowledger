@@ -1,0 +1,24 @@
+{
+  "name": "shadowledger",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private payroll with public aggregate accountability on Starknet STRK20.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @shadowledger/web dev",
+    "build": "pnpm --filter @shadowledger/web build",
+    "lint": "pnpm --filter @shadowledger/web lint",
+    "typecheck": "pnpm --filter @shadowledger/web typecheck",
+    "test": "pnpm --filter @shadowledger/web test",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  }
+}

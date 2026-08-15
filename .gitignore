@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# local environment (the example remains committed)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# tests and tooling
+coverage/
+*.tsbuildinfo
+
+# editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# local transaction evidence and secrets
+*.private.json
+*.secret.json
