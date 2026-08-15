@@ -5,7 +5,11 @@ export type WalletStage =
   | "CAPABILITY_CHECK"
   | "BALANCE_READ"
   | "SHIELD_SIMULATING"
-  | "SHIELD_SUBMITTING";
+  | "SHIELD_SUBMITTING"
+  | "SHIELD_CONFIRMING"
+  | "TRANSFER_SIMULATING"
+  | "TRANSFER_SUBMITTING"
+  | "TRANSFER_CONFIRMING";
 
 export type SafeErrorCode =
   | "CONFIGURATION_ERROR"
@@ -16,9 +20,12 @@ export type SafeErrorCode =
   | "NOT_REGISTERED"
   | "INSUFFICIENT_PRIVATE_BALANCE"
   | "PRIVACY_CHECK_FAILED"
+  | "INVALID_REQUEST_PAYLOAD"
   | "INVALID_AMOUNT"
+  | "INVALID_RECIPIENT"
   | "RPC_UNAVAILABLE"
   | "PROOF_GENERATION_FAILED"
+  | "TRANSACTION_NOT_ELIGIBLE"
   | "UNKNOWN_WALLET_ERROR";
 
 const PUBLIC_MESSAGES: Record<SafeErrorCode, string> = {
@@ -27,12 +34,15 @@ const PUBLIC_MESSAGES: Record<SafeErrorCode, string> = {
   NO_ACCOUNT: "The wallet did not provide an account.",
   USER_REJECTED: "The wallet request was rejected. No transaction was sent.",
   UNSUPPORTED_WALLET_API: "This wallet does not expose Wallet API 0.10.3+ STRK20 actions.",
-  NOT_REGISTERED: "This account is not activated for STRK20 private balances yet.",
+  NOT_REGISTERED: "The sender or recipient is not activated for STRK20 private balances yet.",
   INSUFFICIENT_PRIVATE_BALANCE: "The shielded balance is not sufficient for this action.",
   PRIVACY_CHECK_FAILED: "The wallet stopped an action that could weaken privacy.",
+  INVALID_REQUEST_PAYLOAD: "The wallet rejected the private action request as invalid.",
   INVALID_AMOUNT: "Enter a valid amount within the displayed safety limit.",
+  INVALID_RECIPIENT: "Enter a valid, non-zero Starknet recipient address.",
   RPC_UNAVAILABLE: "The Starknet service is temporarily unavailable. Try again later.",
   PROOF_GENERATION_FAILED: "The wallet could not prepare the STRK20 proof.",
+  TRANSACTION_NOT_ELIGIBLE: "The transaction is not yet a successful, accepted STRK20 pool interaction.",
   UNKNOWN_WALLET_ERROR: "The wallet request did not complete. No sensitive details were retained.",
 };
 
@@ -58,7 +68,7 @@ function classifyError(error: unknown): SafeErrorCode {
 
   // Wallet API 0.10.3 error codes. Messages are deliberately discarded.
   if (numericCode === 113) return "USER_REJECTED";
-  if (numericCode === 114) return "INVALID_AMOUNT";
+  if (numericCode === 114) return "INVALID_REQUEST_PAYLOAD";
   if (numericCode === 118) return "NOT_REGISTERED";
   if (numericCode === 119) return "INSUFFICIENT_PRIVATE_BALANCE";
   if (numericCode === 120) return "PRIVACY_CHECK_FAILED";

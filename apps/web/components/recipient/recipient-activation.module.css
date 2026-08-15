@@ -1,0 +1,154 @@
+.activationShell {
+  padding-block: 44px 68px;
+}
+
+.readinessBanner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel-strong);
+}
+
+.readinessMark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.readinessBanner h2 {
+  margin: 0 0 5px;
+  font-size: 1.08rem;
+}
+
+.readinessBanner p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.success {
+  border-color: rgba(183, 243, 74, 0.4);
+  background: var(--lime-soft);
+}
+
+.success .readinessMark,
+.success h2 {
+  color: var(--lime);
+}
+
+.warning {
+  border-color: rgba(244, 202, 114, 0.35);
+}
+
+.warning .readinessMark,
+.warning h2 {
+  color: var(--warning);
+}
+
+.danger {
+  border-color: rgba(255, 143, 132, 0.35);
+}
+
+.danger .readinessMark,
+.danger h2 {
+  color: var(--danger);
+}
+
+.steps {
+  display: grid;
+  gap: 15px;
+  margin: 22px 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: activation-step;
+}
+
+.steps li {
+  position: relative;
+  min-height: 34px;
+  padding-left: 46px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  counter-increment: activation-step;
+}
+
+.steps li::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--cyan);
+  content: counter(activation-step, decimal-leading-zero);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.officialLink {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 14px 18px;
+  border: 1px solid var(--lime);
+  border-radius: 12px;
+  color: #10170b;
+  background: var(--lime);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.officialLink:hover {
+  filter: brightness(1.08);
+}
+
+.finePrint {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.privacyBoundary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 13px;
+  align-items: start;
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px dashed rgba(117, 230, 204, 0.28);
+  border-radius: 14px;
+  color: var(--muted);
+  background: rgba(117, 230, 204, 0.035);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.privacyBoundary strong {
+  color: var(--cyan);
+}
+
+.privacyBoundary p {
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  .readinessBanner {
+    grid-template-columns: 1fr;
+  }
+}

@@ -9,7 +9,12 @@ import {
   detectWalletCapability,
 } from "@/lib/strk20/capabilities";
 import { SafeWalletError } from "@/lib/strk20/errors";
+import {
+  assessPoolTransactionReceipt,
+  type PoolTransactionEvidence,
+} from "@/lib/strk20/evidence";
 import { assertMainnetChain, SN_MAIN } from "@/lib/strk20/mainnet";
+import { privateTransferAction } from "@/lib/strk20/private-transfer";
 
 export type PrivacyWalletSession = {
   wallet: WalletWithStarknetFeatures;
@@ -128,6 +133,51 @@ export async function submitShield(input: {
   const result = await accountAfterFinalChainCheck.strk20InvokeTransaction([action]);
   if (!result.transaction_hash) throw new SafeWalletError("UNKNOWN_WALLET_ERROR");
   return result.transaction_hash;
+}
+
+export async function simulatePrivateTransfer(input: {
+  session: PrivacyWalletSession;
+  tokenAddress: `0x${string}`;
+  recipient: string;
+  amount: bigint;
+}): Promise<void> {
+  const action = privateTransferAction(input);
+  const account = await assertSessionIsStillOnMainnet(input.session);
+  await account.strk20PrepareInvoke([action], true);
+}
+
+export async function submitPrivateTransfer(input: {
+  session: PrivacyWalletSession;
+  tokenAddress: `0x${string}`;
+  recipient: string;
+  amount: bigint;
+}): Promise<string> {
+  const action = privateTransferAction(input);
+  const account = await assertSessionIsStillOnMainnet(input.session);
+
+  // A preview is deliberately repeated so the submitted action matches the
+  // latest recipient, amount, wallet chain, and provider chain.
+  await account.strk20PrepareInvoke([action], true);
+  const accountAfterFinalChainCheck = await assertSessionIsStillOnMainnet(input.session);
+  const result = await accountAfterFinalChainCheck.strk20InvokeTransaction([action]);
+  if (!result.transaction_hash) throw new SafeWalletError("UNKNOWN_WALLET_ERROR");
+  return result.transaction_hash;
+}
+
+export async function confirmEligiblePoolTransaction(input: {
+  session: PrivacyWalletSession;
+  transactionHash: string;
+  poolAddress: `0x${string}`;
+}): Promise<PoolTransactionEvidence> {
+  await assertSessionIsStillOnMainnet(input.session);
+  const receipt = await input.session.provider.waitForTransaction(
+    input.transactionHash,
+  );
+  const evidence = assessPoolTransactionReceipt(receipt, input.poolAddress);
+  if (!evidence.eligible) {
+    throw new SafeWalletError("TRANSACTION_NOT_ELIGIBLE");
+  }
+  return evidence;
 }
 
 export async function disconnectPrivacyWallet(

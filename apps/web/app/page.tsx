@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { WalletPanel } from "@/components/wallet/wallet-panel";
 
 export default function Home() {
@@ -10,16 +12,21 @@ export default function Home() {
           ShadowLedger is building private payroll distribution with public aggregate
           commitments and selective verification for recipients and auditors.
         </p>
+        <div className="hero-actions">
+          <Link className="primary-link" href="/recipient/activate">
+            Check recipient readiness
+          </Link>
+        </div>
       </header>
 
       <section className="shell milestone" aria-labelledby="milestone-heading">
         <div>
-          <p className="section-kicker">August 15 foundation</p>
-          <h2 id="milestone-heading">Verify the privacy rail first.</h2>
+          <p className="section-kicker">August 16 recipient readiness</p>
+          <h2 id="milestone-heading">Activate, verify, then transfer.</h2>
         </div>
         <p>
-          Connect a compatible wallet, prove it is on <code>SN_MAIN</code>, check
-          Wallet API support, and read the shielded balance directly from the wallet.
+          Prepare three demo recipients, require <code>SN_MAIN</code> and Wallet API
+          support, then simulate one tiny private transfer with no public fallback.
         </p>
       </section>
 
