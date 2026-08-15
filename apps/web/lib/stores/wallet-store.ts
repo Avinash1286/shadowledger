@@ -17,6 +17,7 @@ export type WalletPhase =
   | "simulating"
   | "simulation-ready"
   | "submitting"
+  | "confirming"
   | "submitted"
   | "error";
 

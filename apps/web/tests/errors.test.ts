@@ -8,6 +8,7 @@ import {
 describe("wallet error redaction", () => {
   it.each([
     [113, "USER_REJECTED"],
+    [114, "INVALID_REQUEST_PAYLOAD"],
     [118, "NOT_REGISTERED"],
     [119, "INSUFFICIENT_PRIVATE_BALANCE"],
     [120, "PRIVACY_CHECK_FAILED"],

@@ -7,7 +7,7 @@ ShadowLedger is an entry for the STRK20 Private Sprint 2026, in the **Payments**
 - Live app: <https://shadowledger-six.vercel.app>
 - Official registration: <https://github.com/starkience/strk20-hackathon/pull/49>
 
-## Current milestone — wallet foundation
+## Current milestone — recipient readiness
 
 The web app currently provides:
 
@@ -15,6 +15,9 @@ The web app currently provides:
 - A hard `SN_MAIN` guard before `WalletAccountV6` is constructed or used.
 - Wallet API `0.10.3+` and STRK20 capability detection.
 - Shielded STRK balance reads directly from the wallet.
+- A recipient activation page at [`/recipient/activate`](https://shadowledger-six.vercel.app/recipient/activate) that checks the connected account without requesting a viewing key.
+- A capped, single-recipient STRK20 private-transfer flow with exact-input simulation and no public fallback.
+- On-chain evidence checks that require a succeeded, accepted receipt with an event from the configured STRK20 pool.
 - Fixed, privacy-safe error categories and redacted diagnostics.
 - A deliberately capped, user-initiated shield flow that simulates before asking the wallet to submit.
 
@@ -32,7 +35,7 @@ pnpm dev
 
 Open <http://localhost:3000>, install/open Ready X, select a Starknet mainnet account, then connect. The app will refuse Sepolia and unknown chain IDs.
 
-The shield form can create a real mainnet transaction. It is capped at 1 STRK, requires an explicit acknowledgement, performs a fresh chain check, and simulates immediately before opening the wallet approval request. Review the wallet prompt before approving. A shield/deposit is public.
+The shield and private-transfer forms can create real mainnet transactions. Both require exact-input simulation and a fresh chain check before opening the wallet approval request. The shield is capped at 1 STRK; the technical private transfer is capped at 0.1 STRK and requires an independently verified recipient-readiness acknowledgement. Review fees and gas in Ready X before approving. A shield/deposit is public; a STRK20 transfer must never fall back to a public token transfer.
 
 ## Checks
 
@@ -53,6 +56,8 @@ Before a real transaction, verify the pool address against the current official 
 ## Roadmap
 
 See [`plan.md`](./plan.md) for the product, privacy, contract, testing, mainnet, and submission plan.
+The August 16 operational checklist is in
+[`docs/RECIPIENT_READINESS.md`](./docs/RECIPIENT_READINESS.md).
 
 ## License
 
