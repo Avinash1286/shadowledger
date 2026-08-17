@@ -13,22 +13,27 @@ export default function Home() {
           commitments and selective verification for recipients and auditors.
         </p>
         <div className="hero-actions">
-          <Link className="primary-link" href="/recipient/activate">
-            Check recipient readiness
+          <Link className="primary-link" href="/payroll/new">
+            Create a local payroll
           </Link>
         </div>
       </header>
 
       <section className="shell milestone" aria-labelledby="milestone-heading">
         <div>
-          <p className="section-kicker">August 16 recipient readiness</p>
-          <h2 id="milestone-heading">Activate, verify, then transfer.</h2>
+          <p className="section-kicker">August 17 local payroll input</p>
+          <h2 id="milestone-heading">Three rows in. Zero rows out.</h2>
         </div>
         <p>
-          Prepare three demo recipients, require <code>SN_MAIN</code> and Wallet API
-          support, then simulate one tiny private transfer with no public fallback.
+          Import or enter allocations, validate exact token decimals and recipients,
+          detect duplicates, and compute the aggregate entirely in the browser.
         </p>
       </section>
+
+      <nav className="shell secondary-nav" aria-label="Product flows">
+        <Link href="/payroll/new">Local payroll builder</Link>
+        <Link href="/recipient/activate">Recipient readiness</Link>
+      </nav>
 
       <WalletPanel />
 
