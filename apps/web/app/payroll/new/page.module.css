@@ -1,0 +1,2 @@
+.backLink { display: inline-flex; gap: 8px; align-items: center; margin-bottom: 34px; color: var(--muted); font-size: .8rem; font-weight: 700; text-decoration: none; }
+.backLink:hover { color: var(--lime); }
