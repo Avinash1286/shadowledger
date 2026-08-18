@@ -6,6 +6,7 @@ import { parsePayrollCsv } from "@/lib/payroll/csv";
 import type { PayrollDraftRow, PayrollValidationError } from "@/lib/payroll/types";
 import { validatePayrollRows } from "@/lib/payroll/validation";
 import { formatTokenAmount } from "@/lib/strk20/amount";
+import { CommitmentPanel } from "@/components/payroll/commitment-panel";
 
 import styles from "./payroll-input.module.css";
 
@@ -31,7 +32,8 @@ function errorReport(errors: PayrollValidationError[]): string {
   ].join("\r\n");
 }
 
-export function PayrollInput({ tokenSymbol, tokenDecimals }: {
+export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
+  tokenAddress: `0x${string}`;
   tokenSymbol: string;
   tokenDecimals: number;
 }) {
@@ -197,6 +199,14 @@ export function PayrollInput({ tokenSymbol, tokenDecimals }: {
         </div>
         {rows.length === 0 && <p className={styles.empty}>No payroll rows. Add a recipient or import a corrected CSV.</p>}
       </section>
+
+      <CommitmentPanel
+        rows={validation.rows}
+        canGenerate={valid}
+        token={tokenAddress}
+        tokenSymbol={tokenSymbol}
+        tokenDecimals={tokenDecimals}
+      />
     </section>
   );
 }

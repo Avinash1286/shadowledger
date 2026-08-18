@@ -1,12 +1,13 @@
 import { validateAndParseAddress } from "starknet";
 
-import { MAX_FELT, parseTokenAmount } from "@/lib/strk20/amount";
+import { parseTokenAmount } from "@/lib/strk20/amount";
 import type {
   PayrollDraftRow,
   PayrollValidationError,
   PayrollValidationResult,
   ValidatedPayrollRow,
 } from "@/lib/payroll/types";
+import { MAX_U128 } from "@/lib/payroll/commitment";
 
 export const MAX_PAYROLL_ROWS = 500;
 export const MAX_MEMO_LENGTH = 160;
@@ -66,7 +67,7 @@ export function validatePayrollRows(
     }
 
     try {
-      amountUnits = parseTokenAmount(draft.amount, decimals);
+      amountUnits = parseTokenAmount(draft.amount, decimals, MAX_U128);
     } catch (error) {
       errors.push({
         rowNumber,
@@ -98,10 +99,10 @@ export function validatePayrollRows(
     }
   });
 
-  if (totalUnits > MAX_FELT) {
+  if (totalUnits > MAX_U128) {
     errors.push({
       field: "total",
-      message: "The aggregate exceeds Starknet's safe felt range.",
+      message: "The aggregate exceeds the unsigned 128-bit commitment limit.",
     });
   }
 

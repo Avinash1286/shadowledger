@@ -21,12 +21,12 @@ export default function Home() {
 
       <section className="shell milestone" aria-labelledby="milestone-heading">
         <div>
-          <p className="section-kicker">August 17 local payroll input</p>
-          <h2 id="milestone-heading">Three rows in. Zero rows out.</h2>
+          <p className="section-kicker">August 18 Poseidon commitments</p>
+          <h2 id="milestone-heading">Three proofs. One public root.</h2>
         </div>
         <p>
-          Import or enter allocations, validate exact token decimals and recipients,
-          detect duplicates, and compute the aggregate entirely in the browser.
+          Generate salted leaves, positional Merkle proofs, and a canonical public
+          manifest while every recipient row remains local to the browser.
         </p>
       </section>
 
