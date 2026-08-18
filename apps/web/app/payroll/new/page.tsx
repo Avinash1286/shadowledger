@@ -18,18 +18,22 @@ export default function NewPayrollPage() {
     <main>
       <header className="hero shell">
         <Link className={styles.backLink} href="/"><span aria-hidden="true">←</span> ShadowLedger</Link>
-        <div className="eyebrow"><span className="signal" /> Local payroll builder · August 17</div>
-        <h1>Build the payroll here.<br /><span>Keep every row here.</span></h1>
-        <p className="lede">Enter allocations manually or import a CSV. Exact decimal conversion, address checks, duplicate detection, and totals all run on this device—before any commitment or transaction exists.</p>
+        <div className="eyebrow"><span className="signal" /> Local commitment builder · August 18</div>
+        <h1>Build and commit here.<br /><span>Keep every row here.</span></h1>
+        <p className="lede">Enter allocations manually or import a CSV, then generate salted Poseidon leaves, positional proofs, and a canonical public manifest without sending the payroll book anywhere.</p>
       </header>
 
       <section className="shell milestone" aria-labelledby="input-milestone">
-        <div><p className="section-kicker">Today&apos;s exit gate</p><h2 id="input-milestone">Three rows. Zero uploads.</h2></div>
-        <p>The CSV is read with the browser File API and never submitted to a Server Action, route handler, analytics endpoint, or ShadowLedger backend.</p>
+        <div><p className="section-kicker">Today&apos;s exit gate</p><h2 id="input-milestone">Three proofs. One root.</h2></div>
+        <p>Every demo row must verify against the same padded Merkle root. Changing any amount, recipient, memo, salt, sibling, or direction must fail locally.</p>
       </section>
 
       {configResult.ok ? (
-        <PayrollInput tokenSymbol={configResult.config.tokenSymbol} tokenDecimals={configResult.config.tokenDecimals} />
+        <PayrollInput
+          tokenAddress={configResult.config.tokenAddress}
+          tokenSymbol={configResult.config.tokenSymbol}
+          tokenDecimals={configResult.config.tokenDecimals}
+        />
       ) : (
         <section className="shell"><div className="notice error" role="alert">Configuration blocked: {configResult.message}</div></section>
       )}

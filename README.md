@@ -7,7 +7,7 @@ ShadowLedger is an entry for the STRK20 Private Sprint 2026, in the **Payments**
 - Live app: <https://shadowledger-six.vercel.app>
 - Official registration: <https://github.com/starkience/strk20-hackathon/pull/49>
 
-## Current milestone — local payroll input
+## Current milestone — local Poseidon commitments
 
 The web app currently provides:
 
@@ -15,6 +15,9 @@ The web app currently provides:
 - Exact token-decimal conversion, Starknet address and duplicate checks, aggregate calculation, and downloadable local error reports.
 - A three-recipient [`demo-payroll.csv`](./apps/web/public/demo-payroll.csv) fixture with quoted-comma coverage.
 - A reusable outgoing-payload guard that rejects plaintext `recipient`, `amount`, `memo`, or `salt` fields.
+- Domain-separated run IDs and salted payroll leaves using Starknet Poseidon.
+- Positional Merkle trees, documented empty-leaf padding, and proof generation/verification for every row.
+- A canonical public manifest and manifest hash containing no individual payroll data.
 - Wallet Standard discovery with explicit Ready wallet guidance.
 - A hard `SN_MAIN` guard before `WalletAccountV6` is constructed or used.
 - Wallet API `0.10.3+` and STRK20 capability detection.
@@ -61,6 +64,7 @@ Before a real transaction, verify the pool address against the current official 
 
 See [`plan.md`](./plan.md) for the product, privacy, contract, testing, mainnet, and submission plan.
 The August 16 operational checklist is in [`docs/RECIPIENT_READINESS.md`](./docs/RECIPIENT_READINESS.md).
+The commitment, Merkle, and canonical manifest format is fixed in [`docs/RECEIPT_SPEC.md`](./docs/RECEIPT_SPEC.md).
 
 ## License
 
