@@ -101,3 +101,29 @@ The checked-in demo CSV, organization `0xabc`, period `2026-08`, nonce `7`, salt
 - Manifest hash: `0x5e25a2ffb9cf9722be695a1657c097bd2e0bdafe38e5c8872a43c43f57def6f`
 
 The unit fixture fixes every leaf as well. Altering an amount, recipient, memo, salt, sibling, or proof direction must fail verification.
+
+## Encrypted recipient package
+
+`shadowledger/recipient-receipt/v1` plaintext is JSON encoded as UTF-8 and encrypted in the browser with AES-256-GCM. Every package receives an independent random 32-byte key, random 12-byte IV, and random 24-byte blob identifier.
+
+The authenticated additional data is the UTF-8 encoding of these newline-delimited values:
+
+```text
+shadowledger/encrypted-receipt/v1
+<blobId>
+<runId>
+```
+
+The stored `shadowledger/encrypted-receipt/v1` envelope contains only `algorithm`, `blobId`, `runId`, `iv`, and `ciphertext`. Binary values use unpadded base64url. Convex never receives the AES key or plaintext receipt.
+
+## Claim link
+
+```text
+https://<app>/claim/<blobId>#key=<base64url-encoded-32-byte-key>
+```
+
+The key is a URL fragment, not a query parameter. Browsers do not include fragments in HTTP requests. The claim page fetches ciphertext by `blobId`, reads the fragment locally, and decrypts with Web Crypto. A missing key, wrong key, modified ciphertext, changed blob ID, or changed run ID fails closed.
+
+## Admin recovery bundle
+
+The administrator's claim links are JSON encoded and independently encrypted as `shadowledger/encrypted-recovery/v1` with a new 32-byte AES-GCM key and 12-byte IV. Its authenticated data binds the recovery schema and random bundle ID. The encrypted bundle and recovery key are separate downloads; neither replaces secure offline backup practices.

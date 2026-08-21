@@ -29,7 +29,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 
 .shell { width: min(1120px, calc(100% - 40px)); margin-inline: auto; }
@@ -59,6 +59,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   letter-spacing: -.06em;
 }
 .hero h1 span { color: var(--muted); }
+.compact-hero { padding-bottom: 24px; }
+.compact-hero h1 { font-size: clamp(2.5rem, 6vw, 4.8rem); }
 .lede {
   max-width: 700px;
   margin: 0;
@@ -162,12 +164,28 @@ button:disabled { cursor: not-allowed; opacity: .45; }
   color: var(--ink);
   background: rgba(0,0,0,.22);
 }
+.field textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  outline: none;
+  color: var(--ink);
+  background: rgba(0,0,0,.22);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.field textarea:focus { border-color: var(--lime); box-shadow: 0 0 0 3px var(--lime-soft); }
 .field input:focus { border-color: var(--lime); box-shadow: 0 0 0 3px var(--lime-soft); }
 .field small { color: var(--muted); line-height: 1.45; }
 .check-row { display: flex; gap: 10px; align-items: flex-start; margin: 18px 0; color: var(--muted); font-size: .86rem; line-height: 1.4; }
 .check-row input { margin-top: 3px; accent-color: var(--lime); }
 .action-row { display: flex; gap: 10px; }
 .action-row > * { flex: 1; }
+.stacked-actions { display: grid; gap: 10px; margin-top: 22px; }
+.devnet-check { margin-bottom: 20px; }
 .detail-list { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
 .detail-list li { display: flex; justify-content: space-between; gap: 20px; padding-top: 10px; border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
 .detail-list strong { color: var(--ink); text-align: right; overflow-wrap: anywhere; }

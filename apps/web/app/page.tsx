@@ -21,18 +21,20 @@ export default function Home() {
 
       <section className="shell milestone" aria-labelledby="milestone-heading">
         <div>
-          <p className="section-kicker">August 18 Poseidon commitments</p>
-          <h2 id="milestone-heading">Three proofs. One public root.</h2>
+          <p className="section-kicker">Complete through August 21</p>
+          <h2 id="milestone-heading">Public commitments. Private receipts.</h2>
         </div>
         <p>
-          Generate salted leaves, positional Merkle proofs, and a canonical public
-          manifest while every recipient row remains local to the browser.
+          Register aggregate runs on Starknet, verify their event-backed state, then
+          deliver AES-GCM receipts whose keys stay in private claim-link fragments.
         </p>
       </section>
 
       <nav className="shell secondary-nav" aria-label="Product flows">
         <Link href="/payroll/new">Local payroll builder</Link>
         <Link href="/recipient/activate">Recipient readiness</Link>
+        <Link href="/registry">Run registry</Link>
+        <Link href="/receipts">Encrypted receipts</Link>
       </nav>
 
       <WalletPanel />

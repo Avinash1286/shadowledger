@@ -20,6 +20,8 @@ contracts/target/
 contracts/.snfoundry_cache/
 contracts/snfoundry_trace/
 contracts/profile/
+.convex/
+apps/web/.convex/
 
 # editors and operating systems
 .DS_Store

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "environment": "local-starknet-devnet",
+  "chainId": "0x534e5f5345504f4c4941",
+  "rpcUrl": "http://127.0.0.1:5050/rpc",
+  "developerAccount": "0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691",
+  "classHash": "0x432349c8d52dee39c115113ddc95da12fef847bd7b67426fcfc5fa9a51a4f1e",
+  "contractAddress": "0x2c0911199d50cfdc7fbb74bdc6bba3df7a612bdb9b95a23f2b3a136d3bf48fa",
+  "declareTransactionHash": "0x507fa46f061faf81cc51576f41afdd46e96df8fb8cd0d1272e67c5b9fbef0c3",
+  "deployTransactionHash": "0x317aaf9689a1696ee1511d48b43f2728251d4fbac7216ec6c386fd26e0b2844",
+  "createTransactionHash": "0x5d33c1b4d7ed09702a04861ccb667e3b812f5ec156ca2769d5a93d8cbcd0b3c",
+  "finalizeTransactionHash": "0x7ea153b0016e2a066ddbcf39d5020edaf77286441acfb38d8614b27f029450d",
+  "verifiedEvents": [
+    "PayrollRunCreated",
+    "PayrollRunFinalized"
+  ],
+  "storedStatus": 2,
+  "testRun": {
+    "runId": "0x2026082001",
+    "token": "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+    "aggregateAmount": "3000000000000000000",
+    "recipientCount": 3,
+    "periodHash": "0x202608",
+    "merkleRoot": "0x20260820a1",
+    "manifestHash": "0x20260820b2",
+    "strk20TxHash": "0x20260820c3"
+  }
+}
