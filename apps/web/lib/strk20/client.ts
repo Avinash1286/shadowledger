@@ -73,7 +73,7 @@ export async function connectPrivacyWallet(
   };
 }
 
-async function assertSessionIsStillOnMainnet(
+export async function assertSessionIsStillOnMainnet(
   session: PrivacyWalletSession,
 ): Promise<WalletAccountV6> {
   // Re-check through the raw wallet API before every WalletAccountV6 operation.

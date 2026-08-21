@@ -8,6 +8,8 @@ export type PublicConfig = {
   tokenAddress: `0x${string}`;
   tokenSymbol: string;
   tokenDecimals: number;
+  registryAddress: `0x${string}` | null;
+  convexUrl: string | null;
 };
 
 export type PublicConfigInput = {
@@ -18,6 +20,8 @@ export type PublicConfigInput = {
   tokenAddress?: string;
   tokenSymbol?: string;
   tokenDecimals?: string;
+  registryAddress?: string;
+  convexUrl?: string;
 };
 
 export type PublicConfigResult =
@@ -67,6 +71,23 @@ export function parsePublicConfig(input: PublicConfigInput): PublicConfigResult 
     return { ok: false, message: "NEXT_PUBLIC_PAYROLL_TOKEN_SYMBOL is required." };
   }
 
+  const registryAddress = input.registryAddress?.trim() || null;
+  if (registryAddress && !isStarknetAddress(registryAddress)) {
+    return { ok: false, message: "NEXT_PUBLIC_PAYROLL_REGISTRY_ADDRESS is invalid." };
+  }
+
+  const convexUrl = input.convexUrl?.trim() || null;
+  if (convexUrl) {
+    try {
+      const parsed = new URL(convexUrl);
+      if (parsed.protocol !== "https:" && parsed.hostname !== "localhost" && parsed.hostname !== "127.0.0.1") {
+        return { ok: false, message: "NEXT_PUBLIC_CONVEX_URL must use HTTPS." };
+      }
+    } catch {
+      return { ok: false, message: "NEXT_PUBLIC_CONVEX_URL is not a valid URL." };
+    }
+  }
+
   return {
     ok: true,
     config: {
@@ -77,6 +98,8 @@ export function parsePublicConfig(input: PublicConfigInput): PublicConfigResult 
       tokenAddress: tokenAddress as `0x${string}`,
       tokenSymbol,
       tokenDecimals: decimals,
+      registryAddress: registryAddress as `0x${string}` | null,
+      convexUrl,
     },
   };
 }
@@ -90,5 +113,7 @@ export function readPublicConfig(): PublicConfigResult {
     tokenAddress: process.env.NEXT_PUBLIC_PAYROLL_TOKEN_ADDRESS,
     tokenSymbol: process.env.NEXT_PUBLIC_PAYROLL_TOKEN_SYMBOL,
     tokenDecimals: process.env.NEXT_PUBLIC_PAYROLL_TOKEN_DECIMALS,
+    registryAddress: process.env.NEXT_PUBLIC_PAYROLL_REGISTRY_ADDRESS,
+    convexUrl: process.env.NEXT_PUBLIC_CONVEX_URL,
   });
 }

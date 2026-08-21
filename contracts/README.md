@@ -45,4 +45,16 @@ docker build -t shadowledger-cairo:2.20.1-0.63.0 contracts
 docker run --rm --mount "type=bind,source=$PWD,target=/workspace" -w /workspace/contracts shadowledger-cairo:2.20.1-0.63.0 scarb test
 ```
 
-The Docker build verifies every downloaded release archive against its published SHA-256 digest. Network profiles and deployment addresses are intentionally deferred to the August 20 registry integration milestone.
+The Docker build verifies every downloaded release archive against its published SHA-256 digest.
+
+## Local Devnet deployment
+
+From the repository root, start the pinned Devnet image, build CASM, and deploy the registry plus a finalized tiny run:
+
+```powershell
+docker run --name shadowledger-devnet --rm -p 127.0.0.1:5050:5050 starknetfoundation/starknet-devnet-rs:0.9.2-seed0 --accounts 3
+docker run --rm -v "${PWD}\contracts:/workspace" -w /workspace shadowledger-cairo:2.20.1-0.63.0 bash -lc "scarb build"
+pnpm --filter @shadowledger/web registry:deploy:devnet
+```
+
+The deployment script reads a funded deterministic account from the local Devnet RPC, but writes only public addresses, hashes, status, and test data to `deployments/devnet.json`. It never persists the local development private key. This is development evidence and is not a mainnet deployment.
