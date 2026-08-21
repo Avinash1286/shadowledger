@@ -7,7 +7,7 @@ ShadowLedger is an entry for the STRK20 Private Sprint 2026, in the **Payments**
 - Live app: <https://shadowledger-six.vercel.app>
 - Official registration: <https://github.com/starkience/strk20-hackathon/pull/49>
 
-## Current milestone — local Poseidon commitments
+## Current milestone — tested payroll registry
 
 The web app currently provides:
 
@@ -18,6 +18,8 @@ The web app currently provides:
 - Domain-separated run IDs and salted payroll leaves using Starknet Poseidon.
 - Positional Merkle trees, documented empty-leaf padding, and proof generation/verification for every row.
 - A canonical public manifest and manifest hash containing no individual payroll data.
+- A Cairo `PayrollRegistry` with immutable ownership, aggregate-only events, explicit create/finalize/cancel states, and a five-recipient MVP bound.
+- A pinned Scarb/Starknet Foundry toolchain and contract tests covering every state transition, invalid boundary, event privacy, and fuzzed valid amounts/counts.
 - Wallet Standard discovery with explicit Ready wallet guidance.
 - A hard `SN_MAIN` guard before `WalletAccountV6` is constructed or used.
 - Wallet API `0.10.3+` and STRK20 capability detection.
@@ -51,6 +53,8 @@ pnpm check
 ```
 
 This runs ESLint, strict TypeScript, unit tests, and the production build. Pure helpers for chain parsing, amount parsing, Wallet API capability checks, and error redaction have unit coverage.
+
+The Cairo contract has its own checks under [`contracts`](./contracts); see [`contracts/README.md`](./contracts/README.md) for native and Docker commands.
 
 Vercel runs the same lint, typecheck, test, and production-build gate for every deployment through `apps/web/vercel.json`. The Vercel project root must be set to `apps/web` when importing this monorepo.
 

@@ -16,6 +16,10 @@ out/
 # tests and tooling
 coverage/
 *.tsbuildinfo
+contracts/target/
+contracts/.snfoundry_cache/
+contracts/snfoundry_trace/
+contracts/profile/
 
 # editors and operating systems
 .DS_Store
