@@ -7,7 +7,7 @@ ShadowLedger is an entry for the STRK20 Private Sprint 2026, in the **Payments**
 - Live app: <https://shadowledger-six.vercel.app>
 - Official registration: <https://github.com/starkience/strk20-hackathon/pull/49>
 
-## Current milestone — complete through August 21
+## Current milestone — implemented through August 25
 
 The web app currently provides:
 
@@ -36,10 +36,15 @@ The web app currently provides:
 - On-chain evidence checks that require a succeeded, accepted receipt with an event from the configured STRK20 pool.
 - Fixed, privacy-safe error categories and redacted diagnostics.
 - A deliberately capped, user-initiated shield flow that simulates before asking the wallet to submit.
+- A three-to-five-recipient STRK20 batch mapper with one ordered wallet simulation, exact-total private-balance assessment, repeated pre-submit simulation, and resumable receipt confirmation.
+- An explicit create → simulate → submit → confirm → finalize mainnet state machine with downloadable, non-private transaction evidence.
+- Portable recipient receipts whose SNIP-12 payer signature binds the disclosed line, commitment, and eligible STRK20 transaction.
+- A public `/verify` flow for local Merkle verification plus optional account-signature and finalized-registry comparison.
+- A sensitive audit-package export and network-free `/auditor` flow that recomputes root, manifest hash, total, count, token, and period locally, with clear-memory UX.
 
 No private key, viewing key, recipient, amount, calldata, or raw wallet error is logged or sent to a server.
 
-The August 20 registry deployment is intentionally on isolated local Starknet Devnet, not mainnet. This satisfies the plan's development-environment option without spending funds or signing an irreversible transaction. A mainnet registry address must still be deployed and configured before the final hackathon submission.
+The August 20 registry deployment is intentionally on isolated local Starknet Devnet, not mainnet. A mainnet registry address and the human-approved August 23 transactions are still required before claiming a real end-to-end mainnet payroll. The app never fabricates transaction hashes or signs irreversible actions automatically.
 
 ## Run locally
 
@@ -66,6 +71,8 @@ This runs ESLint, strict TypeScript, unit tests, and the production build. Pure 
 The Cairo contract has its own checks under [`contracts`](./contracts); see [`contracts/README.md`](./contracts/README.md) for native and Docker commands.
 
 The reproducible Devnet and local Convex workflow is documented in [`docs/DEVELOPMENT_DEPLOYMENT.md`](./docs/DEVELOPMENT_DEPLOYMENT.md). Public Devnet transaction evidence is committed at [`contracts/deployments/devnet.json`](./contracts/deployments/devnet.json); it contains no private key.
+
+The wallet-gated August 22–25 sequence is documented in [`docs/AUG22_25_RUNBOOK.md`](./docs/AUG22_25_RUNBOOK.md), and the confidential offline verifier is specified in [`docs/AUDITOR_MODE.md`](./docs/AUDITOR_MODE.md).
 
 Vercel runs the same lint, typecheck, test, and production-build gate for every deployment through `apps/web/vercel.json`. The Vercel project root must be set to `apps/web` when importing this monorepo.
 

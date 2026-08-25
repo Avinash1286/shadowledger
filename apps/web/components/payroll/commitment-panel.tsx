@@ -10,6 +10,8 @@ import {
 import type { PayrollCommitment } from "@/lib/payroll/commitment-types";
 import type { ValidatedPayrollRow } from "@/lib/payroll/types";
 import { verifyMerkleProof } from "@/lib/payroll/merkle";
+import { buildAuditPackage } from "@/lib/audit/package";
+import { PayrollExecutionPanel } from "@/components/payroll/payroll-execution-panel";
 
 import styles from "./commitment-panel.module.css";
 
@@ -36,12 +38,16 @@ export function CommitmentPanel({
   token,
   tokenSymbol,
   tokenDecimals,
+  poolAddress,
+  registryAddress,
 }: {
   rows: readonly ValidatedPayrollRow[];
   canGenerate: boolean;
   token: `0x${string}`;
   tokenSymbol: string;
   tokenDecimals: number;
+  poolAddress: `0x${string}`;
+  registryAddress: `0x${string}` | null;
 }) {
   const [organization, setOrganization] = useState("");
   const [period, setPeriod] = useState("2026-08");
@@ -140,8 +146,10 @@ export function CommitmentPanel({
           </dl>
           <div className={styles.resultActions}>
             <button className="secondary-button" type="button" onClick={() => downloadText("shadowledger-payroll-manifest.json", `${commitment.canonicalManifest}\n`)}>Download public manifest</button>
+            <button className="secondary-button" type="button" onClick={() => downloadText("shadowledger-audit-package.json", `${JSON.stringify(buildAuditPackage(commitment), null, 2)}\n`)}>Download private audit package</button>
           </div>
           <p className={styles.privateNote}>Private rows, random 248-bit salts, leaves, and proofs remain in this tab. The downloaded manifest contains none of them.</p>
+          <PayrollExecutionPanel commitment={commitment} rows={rows} period={period} poolAddress={poolAddress} registryAddress={registryAddress} />
         </div>
       )}
     </section>

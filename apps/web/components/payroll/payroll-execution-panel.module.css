@@ -1,0 +1,21 @@
+.execution { margin-top: 20px; padding: 22px; border: 1px solid rgba(117,230,204,.25); border-radius: 16px; background: rgba(7,15,13,.72); }
+.heading { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
+.heading h3 { margin: 7px 0 0; font-size: 1.35rem; }
+.heading > span { padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--cyan); font: 700 .72rem monospace; text-transform: uppercase; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; overflow: hidden; margin-top: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--line); }
+.metrics div { padding: 14px; background: var(--panel-strong); }
+.metrics small { display: block; color: var(--muted); }
+.metrics strong { display: block; margin-top: 8px; overflow-wrap: anywhere; font-family: monospace; }
+.good, .warn { margin: 13px 0; font-size: .8rem; line-height: 1.45; }
+.good { color: var(--lime); }
+.warn { color: var(--warning); }
+.steps { display: grid; gap: 10px; margin: 20px 0; padding: 0; list-style: none; counter-reset: steps; }
+.steps li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(190px, 280px); gap: 18px; align-items: center; padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.018); counter-increment: steps; }
+.steps li > div > strong { display: block; }
+.steps li > div > small { display: block; margin-top: 5px; overflow-wrap: anywhere; color: var(--muted); }
+.steps :global(.field), .steps :global(.check-row) { margin: 0; }
+.artifacts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: end; margin-top: 18px; }
+.artifacts :global(.field) { margin: 0; }
+.artifacts select { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: var(--panel-strong); }
+.privacy { margin: 15px 0 0; color: var(--muted); font-size: .75rem; line-height: 1.5; }
+@media (max-width: 760px) { .metrics, .artifacts { grid-template-columns: 1fr; } .steps li { grid-template-columns: 1fr; } .heading { flex-direction: column; } }

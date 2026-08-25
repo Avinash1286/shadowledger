@@ -21,8 +21,8 @@ export default function Home() {
 
       <section className="shell milestone" aria-labelledby="milestone-heading">
         <div>
-          <p className="section-kicker">Complete through August 21</p>
-          <h2 id="milestone-heading">Public commitments. Private receipts.</h2>
+          <p className="section-kicker">Implemented through August 25</p>
+          <h2 id="milestone-heading">Batch privately. Verify independently.</h2>
         </div>
         <p>
           Register aggregate runs on Starknet, verify their event-backed state, then
@@ -35,6 +35,8 @@ export default function Home() {
         <Link href="/recipient/activate">Recipient readiness</Link>
         <Link href="/registry">Run registry</Link>
         <Link href="/receipts">Encrypted receipts</Link>
+        <Link href="/verify">Verify receipt</Link>
+        <Link href="/auditor">Auditor mode</Link>
       </nav>
 
       <WalletPanel />

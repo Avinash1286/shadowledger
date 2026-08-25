@@ -15,6 +15,8 @@ import {
 } from "@/lib/strk20/evidence";
 import { assertMainnetChain, SN_MAIN } from "@/lib/strk20/mainnet";
 import { privateTransferAction } from "@/lib/strk20/private-transfer";
+import { buildPayrollBatch } from "@/lib/strk20/payroll-batch";
+import type { PayrollEntryV1 } from "@/lib/payroll/commitment-types";
 
 export type PrivacyWalletSession = {
   wallet: WalletWithStarknetFeatures;
@@ -160,6 +162,28 @@ export async function submitPrivateTransfer(input: {
   await account.strk20PrepareInvoke([action], true);
   const accountAfterFinalChainCheck = await assertSessionIsStillOnMainnet(input.session);
   const result = await accountAfterFinalChainCheck.strk20InvokeTransaction([action]);
+  if (!result.transaction_hash) throw new SafeWalletError("UNKNOWN_WALLET_ERROR");
+  return result.transaction_hash;
+}
+
+export async function simulatePayrollBatch(input: {
+  session: PrivacyWalletSession;
+  entries: readonly PayrollEntryV1[];
+}): Promise<void> {
+  const batch = buildPayrollBatch(input.entries);
+  const account = await assertSessionIsStillOnMainnet(input.session);
+  await account.strk20PrepareInvoke(batch.actions, true);
+}
+
+export async function submitPayrollBatch(input: {
+  session: PrivacyWalletSession;
+  entries: readonly PayrollEntryV1[];
+}): Promise<string> {
+  const batch = buildPayrollBatch(input.entries);
+  const account = await assertSessionIsStillOnMainnet(input.session);
+  await account.strk20PrepareInvoke(batch.actions, true);
+  const accountAfterFinalChainCheck = await assertSessionIsStillOnMainnet(input.session);
+  const result = await accountAfterFinalChainCheck.strk20InvokeTransaction(batch.actions);
   if (!result.transaction_hash) throw new SafeWalletError("UNKNOWN_WALLET_ERROR");
   return result.transaction_hash;
 }
