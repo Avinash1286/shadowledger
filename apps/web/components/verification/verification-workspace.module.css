@@ -1,0 +1,14 @@
+.workspace { display: grid; gap: 18px; padding-block: 30px 70px; }
+.hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.filename { color: var(--muted); font: .8rem monospace; }
+.report { padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+.report h2 { margin: 0 0 18px; }
+.report ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.report li { display: grid; gap: 4px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; }
+.report li span { color: var(--muted); font-size: .82rem; line-height: 1.45; }
+.pass strong { color: var(--lime); }
+.fail strong { color: var(--danger); }
+.recomputed { display: grid; gap: 8px; margin-bottom: 18px; }
+.recomputed div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding-top: 8px; border-top: 1px solid var(--line); }
+.recomputed dt { color: var(--muted); }
+.recomputed dd { margin: 0; overflow-wrap: anywhere; font-family: monospace; }

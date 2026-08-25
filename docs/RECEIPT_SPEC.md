@@ -102,6 +102,14 @@ The checked-in demo CSV, organization `0xabc`, period `2026-08`, nonce `7`, salt
 
 The unit fixture fixes every leaf as well. Altering an amount, recipient, memo, salt, sibling, or proof direction must fail verification.
 
+## Portable signed receipt
+
+`shadowledger/portable-receipt/v1` discloses exactly one payroll row and its positional Merkle proof. It also carries the canonical public manifest, its Poseidon hash, the registry address, payer account, and eligible STRK20 transaction hash.
+
+The payer signs SNIP-12 typed data under the `ShadowLedger` version `1`, `SN_MAIN` domain. The signed message binds `runId`, payer, recipient, token, amount, period hash, memo hash, salt, leaf, Merkle root, manifest hash, and STRK20 transaction hash. Account-abstraction signatures are verified through Starknet's account contract with `RpcProvider.verifyMessageInStarknet`; they are not assumed to be a fixed two-felt public-key signature.
+
+Local verification recomputes the manifest hash, disclosed leaf, period hash, and Merkle path. Online verification additionally compares the finalized registry run and payer account signature. The portable JSON may then be encrypted as the existing AES-GCM recipient package for delivery.
+
 ## Encrypted recipient package
 
 `shadowledger/recipient-receipt/v1` plaintext is JSON encoded as UTF-8 and encrypted in the browser with AES-256-GCM. Every package receives an independent random 32-byte key, random 12-byte IV, and random 24-byte blob identifier.

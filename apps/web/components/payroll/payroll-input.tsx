@@ -11,6 +11,7 @@ import { CommitmentPanel } from "@/components/payroll/commitment-panel";
 import styles from "./payroll-input.module.css";
 
 const INITIAL_ROW_COUNT = 3;
+const MAX_PRIVATE_BATCH_ROWS = 5;
 
 function blankRow(index: number): PayrollDraftRow {
   return { id: `manual-row-${index}`, recipient: "", amount: "", memo: "" };
@@ -32,10 +33,12 @@ function errorReport(errors: PayrollValidationError[]): string {
   ].join("\r\n");
 }
 
-export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
+export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals, poolAddress, registryAddress }: {
   tokenAddress: `0x${string}`;
   tokenSymbol: string;
   tokenDecimals: number;
+  poolAddress: `0x${string}`;
+  registryAddress: `0x${string}` | null;
 }) {
   const [rows, setRows] = useState<PayrollDraftRow[]>(initialRows);
   const [fileErrors, setFileErrors] = useState<PayrollValidationError[]>([]);
@@ -47,7 +50,8 @@ export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
     [rows, tokenDecimals],
   );
   const errors = fileErrors.length > 0 ? fileErrors : dirty ? validation.errors : [];
-  const valid = dirty && rows.length > 0 && errors.length === 0;
+  const batchSizeValid = rows.length >= INITIAL_ROW_COUNT && rows.length <= MAX_PRIVATE_BATCH_ROWS;
+  const valid = dirty && batchSizeValid && errors.length === 0;
 
   function updateRow(id: string, field: "recipient" | "amount" | "memo", value: string) {
     setFileErrors([]);
@@ -117,9 +121,9 @@ export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
 
       <div className={styles.summaryGrid}>
         <article><p>Token</p><strong>{tokenSymbol}</strong><span>{tokenDecimals} decimals</span></article>
-        <article><p>Rows</p><strong>{rows.length}</strong><span>Maximum 500</span></article>
+        <article><p>Rows</p><strong>{rows.length}</strong><span>Private batch: 3–5</span></article>
         <article><p>Aggregate</p><strong>{formatTokenAmount(validation.totalUnits, tokenDecimals, tokenDecimals)}</strong><span>{tokenSymbol}</span></article>
-        <article><p>Validation</p><strong className={valid ? styles.good : dirty ? styles.warn : ""}>{valid ? "Ready" : dirty ? `${errors.length} issue${errors.length === 1 ? "" : "s"}` : "Waiting"}</strong><span>Local checks only</span></article>
+        <article><p>Validation</p><strong className={valid ? styles.good : dirty ? styles.warn : ""}>{valid ? "Ready" : dirty && !batchSizeValid ? "Batch size" : dirty ? `${errors.length} issue${errors.length === 1 ? "" : "s"}` : "Waiting"}</strong><span>Local checks only</span></article>
       </div>
 
       <div className={styles.controlGrid}>
@@ -168,6 +172,7 @@ export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
           </ol>
         </section>
       )}
+      {dirty && !batchSizeValid && <div className="notice warning" role="alert">The STRK20 MVP requires 3–5 recipients in one private batch.</div>}
 
       <section className={styles.editor} aria-labelledby="payroll-editor-heading">
         <div className={styles.editorHeader}>
@@ -177,7 +182,7 @@ export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
           </div>
           <div className={styles.editorActions}>
             <button className="secondary-button" type="button" onClick={resetForm}>Clear</button>
-            <button className="primary-button" type="button" onClick={addRow}>Add recipient</button>
+            <button className="primary-button" type="button" disabled={rows.length >= MAX_PRIVATE_BATCH_ROWS} onClick={addRow}>Add recipient</button>
           </div>
         </div>
 
@@ -206,6 +211,8 @@ export function PayrollInput({ tokenAddress, tokenSymbol, tokenDecimals }: {
         token={tokenAddress}
         tokenSymbol={tokenSymbol}
         tokenDecimals={tokenDecimals}
+        poolAddress={poolAddress}
+        registryAddress={registryAddress}
       />
     </section>
   );
