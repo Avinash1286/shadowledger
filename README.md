@@ -1,93 +1,106 @@
 # ShadowLedger
 
-Private payroll and treasury disbursements with public aggregate accountability on Starknet STRK20.
+**Private payroll, public aggregate accountability.** ShadowLedger lets an organization execute a 3–5 recipient STRK20 payroll from Ready while publishing only the total, count, token, and cryptographic commitment needed for verification.
 
-ShadowLedger is an entry for the STRK20 Private Sprint 2026, in the **Payments** category and inspired by **RFP-11**. The MVP will let an organization commit to an aggregate payroll run, distribute individual allocations as private STRK20 notes, and give recipients and auditors selective verification artifacts.
+[Live app](https://shadowledger-six.vercel.app) · [Registration](https://github.com/starkience/strk20-hackathon/pull/49) · Payments / RFP-11 · MIT
 
-- Live app: <https://shadowledger-six.vercel.app>
-- Official registration: <https://github.com/starkience/strk20-hackathon/pull/49>
+> Submission status: the application and submission package are code-complete. The root evidence file still needs three real, successful mainnet STRK20 pool transaction hashes and a public demo-video URL. Those human-approved artifacts are never fabricated or generated from Devnet evidence.
 
-## Current milestone — implemented through August 25
+## Why it matters
 
-The web app currently provides:
+Traditional on-chain payroll exposes every employee and amount. ShadowLedger uses STRK20 private transfers for payout, a salted Poseidon Merkle commitment for aggregate accountability, and recipient-specific signed receipts for selective verification.
 
-- A browser-only payroll builder at [`/payroll/new`](https://shadowledger-six.vercel.app/payroll/new) with manual rows and local CSV import.
-- Exact token-decimal conversion, Starknet address and duplicate checks, aggregate calculation, and downloadable local error reports.
-- A three-recipient [`demo-payroll.csv`](./apps/web/public/demo-payroll.csv) fixture with quoted-comma coverage.
-- A reusable outgoing-payload guard that rejects plaintext `recipient`, `amount`, `memo`, or `salt` fields.
-- Domain-separated run IDs and salted payroll leaves using Starknet Poseidon.
-- Positional Merkle trees, documented empty-leaf padding, and proof generation/verification for every row.
-- A canonical public manifest and manifest hash containing no individual payroll data.
-- A Cairo `PayrollRegistry` with immutable ownership, aggregate-only events, explicit create/finalize/cancel states, and a five-recipient MVP bound.
-- A pinned Scarb/Starknet Foundry toolchain and contract tests covering every state transition, invalid boundary, event privacy, and fuzzed valid amounts/counts.
-- A typed registry client with create/finalize/cancel operations, receipt-event binding, state readback, and a walletless public run page.
-- A local Starknet Devnet deployment with checked-in public evidence; the app-to-contract development check creates and finalizes a fresh run from the registry page.
-- Browser-native AES-256-GCM recipient packages with 256-bit random keys, 96-bit IVs, and authenticated blob/run binding.
-- Claim URLs that keep the decryption key exclusively in the URL fragment, plus recipient-side local decryption.
-- Convex functions for authenticated ciphertext storage, rate-limited public lookup, owner-only revocation, expiry, and a token-gated local fixture path.
-- A separately encrypted admin recovery bundle whose key is downloaded independently.
-- Wrong-key, ciphertext-tamper, AAD-tamper, and ciphertext-privacy tests, including a real local Convex integration test.
-- Wallet Standard discovery with explicit Ready wallet guidance.
-- A hard `SN_MAIN` guard before `WalletAccountV6` is constructed or used.
-- Wallet API `0.10.3+` and STRK20 capability detection.
-- Shielded STRK balance reads directly from the wallet.
-- A recipient activation page at [`/recipient/activate`](https://shadowledger-six.vercel.app/recipient/activate) that checks the connected account without requesting a viewing key.
-- A capped, single-recipient STRK20 private-transfer flow with exact-input simulation and no public fallback.
-- On-chain evidence checks that require a succeeded, accepted receipt with an event from the configured STRK20 pool.
-- Fixed, privacy-safe error categories and redacted diagnostics.
-- A deliberately capped, user-initiated shield flow that simulates before asking the wallet to submit.
-- A three-to-five-recipient STRK20 batch mapper with one ordered wallet simulation, exact-total private-balance assessment, repeated pre-submit simulation, and resumable receipt confirmation.
-- An explicit create → simulate → submit → confirm → finalize mainnet state machine with downloadable, non-private transaction evidence.
-- Portable recipient receipts whose SNIP-12 payer signature binds the disclosed line, commitment, and eligible STRK20 transaction.
-- A public `/verify` flow for local Merkle verification plus optional account-signature and finalized-registry comparison.
-- A sensitive audit-package export and network-free `/auditor` flow that recomputes root, manifest hash, total, count, token, and period locally, with clear-memory UX.
+| Public | Kept private |
+| --- | --- |
+| Payer, token, aggregate total, recipient count | Recipient addresses and individual amounts |
+| Merkle root, manifest hash, run status | Memos, salts, Merkle paths |
+| Eligible STRK20 transaction hash | Wallet secrets and viewing data |
 
-No private key, viewing key, recipient, amount, calldata, or raw wallet error is logged or sent to a server.
+## Demo flow
 
-The August 20 registry deployment is intentionally on isolated local Starknet Devnet, not mainnet. A mainnet registry address and the human-approved August 23 transactions are still required before claiming a real end-to-end mainnet payroll. The app never fabricates transaction hashes or signs irreversible actions automatically.
+1. Connect a Ready mainnet account; ShadowLedger hard-fails on the wrong chain or missing STRK20 capabilities.
+2. Import or enter 3–5 synthetic payroll rows locally. The browser validates exact base units and creates a salted Poseidon Merkle commitment.
+3. Create the aggregate registry record, simulate the full private batch, approve it in Ready, confirm accepted pool evidence, and finalize the run.
+4. Sign and encrypt recipient receipts. A recipient locally decrypts their claim and verifies their leaf, payer signature, registry state, and pool transaction.
+5. A deliberately shared audit package can recompute the entire run offline and then be cleared from memory.
 
-## Run locally
+Useful routes: [`/dashboard`](https://shadowledger-six.vercel.app/dashboard), [`/payroll/new`](https://shadowledger-six.vercel.app/payroll/new), [`/recipient/activate`](https://shadowledger-six.vercel.app/recipient/activate), [`/verify`](https://shadowledger-six.vercel.app/verify), [`/auditor`](https://shadowledger-six.vercel.app/auditor), and [`/privacy`](https://shadowledger-six.vercel.app/privacy).
 
-Requirements: Node.js 20.9+ and pnpm 10.
+## Repository
+
+```text
+apps/web/                  Next.js 16 application and browser tests
+packages/payroll-core/     Framework-agnostic commitment/Merkle library
+contracts/                 Cairo PayrollRegistry and Foundry tests
+docs/                      Architecture, privacy, threat model, runbooks
+strk20.json                Official hackathon evidence manifest
+```
+
+The browser is the plaintext trust boundary. CSV rows, individual amounts, memos, salts, and claim keys are not sent to the application backend. Optional Convex storage receives only authenticated ciphertext. Claim keys stay after `#` in URLs and therefore are not included in HTTP requests.
+
+## Run from a fresh clone
+
+Requirements: Node.js 20.9+, pnpm 10, and Ready for wallet-gated mainnet operations.
 
 ```bash
-pnpm install
+git clone https://github.com/Avinash1286/shadowledger.git
+cd shadowledger
+pnpm install --frozen-lockfile
 cp .env.example apps/web/.env.local
+pnpm check
 pnpm dev
 ```
 
-Open <http://localhost:3000>, install/open Ready X, select a Starknet mainnet account, then connect. The app will refuse Sepolia and unknown chain IDs.
+On Windows PowerShell, replace the `cp` line with `Copy-Item .env.example apps/web/.env.local`. Open `http://localhost:3000`. The public defaults target `SN_MAIN`; add the registry and optional Convex values locally without committing secrets.
 
-The shield and private-transfer forms can create real mainnet transactions. Both require exact-input simulation and a fresh chain check before opening the wallet approval request. The shield is capped at 1 STRK; the technical private transfer is capped at 0.1 STRK and requires an independently verified recipient-readiness acknowledgement. Review fees and gas in Ready X before approving. A shield/deposit is public; a STRK20 transfer must never fall back to a public token transfer.
-
-## Checks
+## Verification
 
 ```bash
 pnpm check
+pnpm submission:check
+pnpm submission:check -- --strict
 ```
 
-This runs ESLint, strict TypeScript, unit tests, and the production build. Pure helpers for chain parsing, amount parsing, Wallet API capability checks, and error redaction have unit coverage.
+`pnpm check` runs lint, strict TypeScript, 100+ web and library tests, the package build, and the production Next.js build. Vercel runs the web lint/typecheck/test/build gate for every deployment; GitHub Actions is intentionally not required.
 
-The Cairo contract has its own checks under [`contracts`](./contracts); see [`contracts/README.md`](./contracts/README.md) for native and Docker commands.
+The non-strict submission check validates the evidence-file structure during development. Strict mode additionally requires at least three transaction hashes and the demo video.
 
-The reproducible Devnet and local Convex workflow is documented in [`docs/DEVELOPMENT_DEPLOYMENT.md`](./docs/DEVELOPMENT_DEPLOYMENT.md). Public Devnet transaction evidence is committed at [`contracts/deployments/devnet.json`](./contracts/deployments/devnet.json); it contains no private key.
+Contract checks are documented in [`contracts/README.md`](./contracts/README.md). Local Devnet evidence in [`contracts/deployments/devnet.json`](./contracts/deployments/devnet.json) proves the registry workflow only; it is never represented as mainnet submission evidence.
 
-The wallet-gated August 22–25 sequence is documented in [`docs/AUG22_25_RUNBOOK.md`](./docs/AUG22_25_RUNBOOK.md), and the confidential offline verifier is specified in [`docs/AUDITOR_MODE.md`](./docs/AUDITOR_MODE.md).
+## Security and privacy
 
-Vercel runs the same lint, typecheck, test, and production-build gate for every deployment through `apps/web/vercel.json`. The Vercel project root must be set to `apps/web` when importing this monorepo.
+- Browser-only parsing and recursive outgoing-payload privacy guard.
+- Exact integer amounts, canonical addresses, duplicate detection, u128 limits.
+- Domain-separated Poseidon run, leaf, node, and manifest hashes with unique 248-bit salts.
+- `SN_MAIN` recheck and exact-input simulation before wallet approval; no public-transfer fallback.
+- Accepted-success receipt and configured-pool-event validation.
+- AES-256-GCM claim encryption with a random key/IV and blob/run authenticated data.
+- SNIP-12 payer attestation, recipient match, Merkle proof, registry comparison, and explorer evidence.
+- CSP and hardened response headers; sensitive routes are no-store, no-referrer, and noindex.
 
-## Configuration
+This is unaudited hackathon software, not production payroll infrastructure. Read the [privacy model](./docs/PRIVACY_MODEL.md), [threat model](./docs/THREAT_MODEL.md), and [security policy](./SECURITY.md) before using it.
 
-Copy the root `.env.example` into `apps/web/.env.local`. Public pool and token addresses remain environment-driven. Never add wallet keys or viewing keys to any environment file.
+## Documentation
 
-Before a real transaction, verify the pool address against the current official STRK20 mainnet guide. Transaction hashes belong in the root `strk20.json` only after explorer verification.
+- [Architecture](./docs/ARCHITECTURE.md)
+- [Privacy model](./docs/PRIVACY_MODEL.md)
+- [Threat model](./docs/THREAT_MODEL.md)
+- [Receipt and commitment specification](./docs/RECEIPT_SPEC.md)
+- [Reusable package integration](./docs/INTEGRATION_GUIDE.md)
+- [Mainnet runbook](./docs/MAINNET_RUNBOOK.md)
+- [Auditor mode](./docs/AUDITOR_MODE.md)
+- [Three-minute demo script](./docs/DEMO_SCRIPT.md)
+- [Security checklist](./docs/SECURITY_CHECKLIST.md)
+- [Development deployment](./docs/DEVELOPMENT_DEPLOYMENT.md)
 
-## Roadmap
+## Submission operator checklist
 
-See [`plan.md`](./plan.md) for the product, privacy, contract, testing, mainnet, and submission plan.
-The August 16 operational checklist is in [`docs/RECIPIENT_READINESS.md`](./docs/RECIPIENT_READINESS.md).
-The commitment, Merkle, canonical manifest, AES-GCM envelope, claim-link, and recovery formats are fixed in [`docs/RECEIPT_SPEC.md`](./docs/RECEIPT_SPEC.md).
+- [x] Public repository, MIT license, live Vercel URL, registration applied by organizers (`cf646b3`)
+- [x] End-to-end product code, tests, reusable package, documentation, and evidence validator
+- [ ] Deploy the immutable registry on mainnet and record its address
+- [ ] Run the synthetic three-recipient payroll with human wallet approval
+- [ ] Verify and add at least three qualifying mainnet pool transaction hashes
+- [ ] Record/upload the three-minute demo and add its URL
+- [ ] Run `pnpm submission:check -- --strict`, verify the live app signed out, and create the final tag
 
-## License
-
-MIT
+The irreversible steps are detailed in [`docs/MAINNET_RUNBOOK.md`](./docs/MAINNET_RUNBOOK.md). Never commit a wallet private key, viewing key, claim key, or real payroll record.

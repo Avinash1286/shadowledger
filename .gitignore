@@ -16,6 +16,7 @@ out/
 # tests and tooling
 coverage/
 *.tsbuildinfo
+packages/*/dist/
 contracts/target/
 contracts/.snfoundry_cache/
 contracts/snfoundry_trace/

@@ -13,6 +13,8 @@ export type RecipientReceiptV1 = {
   };
 };
 
+export type ReceiptPlaintextV1 = RecipientReceiptV1 | import("@/lib/receipts/portable").PortableReceiptV1;
+
 export type EncryptedReceiptBlobV1 = {
   schema: "shadowledger/encrypted-receipt/v1";
   algorithm: "AES-256-GCM";

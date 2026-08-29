@@ -48,7 +48,7 @@ export function RunCard(props: {
         <li><span>Period hash</span><strong>{run.periodHash}</strong></li>
         <li><span>Merkle root</span><strong>{run.merkleRoot}</strong></li>
         <li><span>Manifest hash</span><strong>{run.manifestHash}</strong></li>
-        {run.status === 2 && <li><span>STRK20 transaction</span><strong>{run.strk20TxHash}</strong></li>}
+        {run.status === 2 && <li><span>STRK20 transaction</span><strong><a href={`https://voyager.online/tx/${run.strk20TxHash}`} target="_blank" rel="noreferrer">{shortAddress(run.strk20TxHash)} ↗</a></strong></li>}
       </ul>
     </article>
   );

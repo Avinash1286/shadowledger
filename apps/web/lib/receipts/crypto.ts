@@ -3,8 +3,10 @@ import type {
   EncryptedReceiptBlobV1,
   EncryptedRecoveryBundleV1,
   RecipientReceiptV1,
+  ReceiptPlaintextV1,
   RecoveryBundleSecret,
 } from "@/lib/receipts/types";
+import { parsePortableReceipt } from "@/lib/receipts/portable";
 import { isStarknetAddress } from "@/lib/strk20/address";
 
 const encoder = new TextEncoder();
@@ -49,8 +51,11 @@ function receiptAad(blobId: string, runId: string): Uint8Array {
   return encoder.encode(`shadowledger/encrypted-receipt/v1\n${blobId}\n${runId}`);
 }
 
-export function parseReceipt(value: unknown): RecipientReceiptV1 {
+export function parseReceipt(value: unknown): ReceiptPlaintextV1 {
   if (!value || typeof value !== "object") throw new Error("Receipt must be a JSON object.");
+  if ((value as { schema?: unknown }).schema === "shadowledger/portable-receipt/v1") {
+    return parsePortableReceipt(JSON.stringify(value));
+  }
   const receipt = value as Partial<RecipientReceiptV1>;
   if (receipt.schema !== "shadowledger/recipient-receipt/v1") throw new Error("Unsupported receipt schema.");
   if (!receipt.runId || !isStarknetAddress(receipt.runId)) throw new Error("Receipt runId is invalid.");
@@ -64,15 +69,20 @@ export function parseReceipt(value: unknown): RecipientReceiptV1 {
   return receipt as RecipientReceiptV1;
 }
 
-export async function encryptReceipt(receipt: RecipientReceiptV1): Promise<ClaimSecret> {
+function receiptRunId(receipt: ReceiptPlaintextV1): `0x${string}` {
+  return receipt.schema === "shadowledger/portable-receipt/v1" ? receipt.manifest.runId : receipt.runId;
+}
+
+export async function encryptReceipt(receipt: ReceiptPlaintextV1): Promise<ClaimSecret> {
   const validated = parseReceipt(receipt);
+  const runId = receiptRunId(validated);
   const keyBytes = randomBytes(32);
   const key = toBase64Url(keyBytes);
   const blobId = toBase64Url(randomBytes(24));
   const iv = randomBytes(12);
   const cryptoKey = await importAesKey(key, "encrypt");
   const ciphertext = await webCrypto().subtle.encrypt(
-    { name: "AES-GCM", iv: buffer(iv), additionalData: buffer(receiptAad(blobId, validated.runId)), tagLength: 128 },
+    { name: "AES-GCM", iv: buffer(iv), additionalData: buffer(receiptAad(blobId, runId)), tagLength: 128 },
     cryptoKey,
     buffer(encoder.encode(JSON.stringify(validated))),
   );
@@ -82,14 +92,14 @@ export async function encryptReceipt(receipt: RecipientReceiptV1): Promise<Claim
       schema: "shadowledger/encrypted-receipt/v1",
       algorithm: "AES-256-GCM",
       blobId,
-      runId: validated.runId,
+      runId,
       iv: toBase64Url(iv),
       ciphertext: toBase64Url(new Uint8Array(ciphertext)),
     },
   };
 }
 
-export async function decryptReceipt(blob: EncryptedReceiptBlobV1, encodedKey: string): Promise<RecipientReceiptV1> {
+export async function decryptReceipt(blob: EncryptedReceiptBlobV1, encodedKey: string): Promise<ReceiptPlaintextV1> {
   if (blob.schema !== "shadowledger/encrypted-receipt/v1" || blob.algorithm !== "AES-256-GCM") {
     throw new Error("Unsupported encrypted receipt format.");
   }
@@ -103,7 +113,7 @@ export async function decryptReceipt(blob: EncryptedReceiptBlobV1, encodedKey: s
     );
     const parsed: unknown = JSON.parse(decoder.decode(plaintext));
     const receipt = parseReceipt(parsed);
-    if (receipt.runId !== blob.runId) throw new Error("Receipt run binding does not match.");
+    if (receiptRunId(receipt) !== blob.runId) throw new Error("Receipt run binding does not match.");
     return receipt;
   } catch (cause) {
     if (cause instanceof Error && cause.message === "Receipt run binding does not match.") throw cause;

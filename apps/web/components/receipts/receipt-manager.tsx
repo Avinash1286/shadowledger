@@ -11,17 +11,6 @@ import {
 import { storeEncryptedReceipt } from "@/lib/receipts/convex-client";
 import type { ClaimSecret, RecoveryBundleSecret } from "@/lib/receipts/types";
 
-const SAMPLE_RECEIPT = JSON.stringify({
-  schema: "shadowledger/recipient-receipt/v1",
-  runId: "0x20260821",
-  recipient: "0x1234",
-  token: "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-  amount: "1000000000000000",
-  period: "2026-08",
-  memo: "August payroll",
-  merkleProof: { leaf: "0x101", siblings: ["0x202"], directions: ["right"] },
-}, null, 2);
-
 function downloadJson(filename: string, value: unknown) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: "application/json" }));
   const anchor = document.createElement("a");
@@ -32,7 +21,7 @@ function downloadJson(filename: string, value: unknown) {
 }
 
 export function ReceiptManager(props: { convexUrl: string | null; allowDevelopmentStore?: boolean }) {
-  const [source, setSource] = useState(SAMPLE_RECEIPT);
+  const [source, setSource] = useState("");
   const [claim, setClaim] = useState<ClaimSecret | null>(null);
   const [claimLink, setClaimLink] = useState<string | null>(null);
   const [recovery, setRecovery] = useState<RecoveryBundleSecret | null>(null);
@@ -90,12 +79,12 @@ export function ReceiptManager(props: { convexUrl: string | null; allowDevelopme
       <section className="panel">
         <p className="section-kicker">Admin encryption</p>
         <h2>Seal one recipient receipt</h2>
-        <p className="panel-copy">AES-256-GCM encryption happens locally. Convex receives the IV and ciphertext, never the key or row JSON.</p>
+        <p className="panel-copy">Paste a signed portable receipt downloaded from the finalized payroll flow. AES-256-GCM encryption happens locally; storage receives ciphertext, never the key or row JSON.</p>
         <div className="field">
           <label htmlFor="receipt-json">Recipient receipt JSON</label>
-          <textarea id="receipt-json" rows={18} value={source} onChange={(event) => setSource(event.target.value)} spellCheck={false} />
+          <textarea id="receipt-json" rows={18} value={source} placeholder="Paste shadowledger/portable-receipt/v1 JSON…" onChange={(event) => setSource(event.target.value)} spellCheck={false} />
         </div>
-        <button className="primary-button" disabled={busy} type="button" onClick={() => void generate()}>{busy ? "Encrypting…" : "Encrypt and prepare claim"}</button>
+        <button className="primary-button" disabled={busy || !source.trim()} type="button" onClick={() => void generate()}>{busy ? "Encrypting…" : "Encrypt and prepare claim"}</button>
         {message && <p className="notice success">{message}</p>}
         {error && <p className="notice error">{error}</p>}
       </section>

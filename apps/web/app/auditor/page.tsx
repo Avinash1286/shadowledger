@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { AuditWorkspace } from "@/components/verification/audit-workspace";
 
-export const metadata: Metadata = { title: "Auditor mode — ShadowLedger", description: "Reproduce a ShadowLedger payroll commitment locally." };
+export const metadata: Metadata = { title: "Auditor mode — ShadowLedger", description: "Reproduce a ShadowLedger payroll commitment locally.", robots: { index: false, follow: false, nocache: true } };
 
 export default function AuditorPage() {
   return <main>

@@ -61,7 +61,7 @@ function preferReadyWallets(
   });
 }
 
-export function WalletPanel() {
+export function WalletPanel({ compact = false }: { compact?: boolean } = {}) {
   const configResult = useMemo(() => readPublicConfig(), []);
   const {
     wallets,
@@ -512,7 +512,7 @@ export function WalletPanel() {
           )}
         </article>
 
-        <article className="panel">
+        {!compact && <article className="panel">
           <h3>Tiny mainnet shield</h3>
           <p className="panel-copy">
             Deposit public STRK into the private pool. The wallet owns note discovery and proving;
@@ -578,10 +578,10 @@ export function WalletPanel() {
               </a>
             </div>
           )}
-        </article>
+        </article>}
       </div>
 
-      <div className="workspace-grid transfer-workspace">
+      {!compact && <div className="workspace-grid transfer-workspace">
         <article className="panel">
           <h2>Tiny private transfer</h2>
           <p className="panel-copy">
@@ -721,7 +721,7 @@ export function WalletPanel() {
             fees and gas in Ready X; never expose a recovery or viewing key.
           </div>
         </article>
-      </div>
+      </div>}
     </section>
   );
 }
